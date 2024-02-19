@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  JURI
+  ADMIN
+}
+
+model User {
+  id       String     @id @default(uuid())
+  username String     @unique @db.VarChar(50)
+  password String
+  role     Role       @default(JURI)
+  kegiatan Kegiatan[]
+  Point    Point[]
+}
+
+model Kegiatan {
+  id           String         @id @default(cuid())
+  admin_id     String         @db.Char(36)
+  admin        User           @relation(fields: [admin_id], references: [id])
+  created_at   DateTime       @default(now())
+  description  String
+  peserta      Peserta[]
+  pertandingan Pertandingan[]
+}
+
+enum Kelas {
+  A
+  B
+  C
+}
+
+model Peserta {
+  id          String   @id @default(cuid())
+  kegiatan_id String   @db.VarChar(30)
+  nama        String   @db.VarChar(255)
+  perguruan   String   @db.VarChar(255)
+  kelas       Kelas
+  kegiatan    Kegiatan @relation(fields: [kegiatan_id], references: [id])
+}
+
+model Pertandingan {
+  id             Int      @id @default(autoincrement())
+  tanggal        DateTime
+  sudut_merah_id String   @db.VarChar(30)
+  sudut_biru_id  String   @db.VarChar(30)
+  kegiatan_id    String
+  kegiatan       Kegiatan @relation(fields: [kegiatan_id], references: [id])
+}
+
+enum BabakStatus {
+  berjalan
+  jeda
+  selesai
+}
+
+model Babak {
+  id     Int         @id @default(autoincrement())
+  status BabakStatus @default(selesai)
+  timer  DateTime
+  Point  Point[]
+}
+
+model Point {
+  id       Int    @id @default(autoincrement())
+  babak_id Int
+  babak    Babak  @relation(fields: [babak_id], references: [id])
+  juri_id  String @db.Char(36)
+  juri     User   @relation(fields: [juri_id], references: [id])
+}
