@@ -8,12 +8,12 @@ import { JwtGuard } from 'src/auth/jwt.guard';
 import { UserService } from './user.service';
 
 @Controller('user')
-@Role(RoleEnum.ADMIN)
+@Role([RoleEnum.ADMIN])
 @UseGuards(JwtGuard, RoleGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get()
+  @Get('all')
   async all() {
     return await this.userService.allUser();
   }

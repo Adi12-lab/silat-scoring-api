@@ -38,6 +38,13 @@ export class UserService {
       where: {
         username,
       },
+      include: {
+        kegiatan: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
     return user;
   }

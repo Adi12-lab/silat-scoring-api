@@ -12,22 +12,24 @@ datasource db {
 
 enum Role {
   JURI
+  PENGAWAS
   ADMIN
 }
 
 model User {
-  id       String     @id @default(uuid())
-  username String     @unique @db.VarChar(50)
-  password String
-  role     Role       @default(JURI)
-  kegiatan Kegiatan[]
-  Point    Point[]
+  id          String    @id @default(uuid())
+  username    String    @unique @db.VarChar(50)
+  password    String
+  role        Role      @default(JURI)
+  point       Point[]
+  kegiatan    Kegiatan? @relation(fields: [kegiatan_id], references: [id]) //bisa jadi pengawas atau juri
+  kegiatan_id String?
 }
 
 model Kegiatan {
   id           String         @id @default(cuid())
-  admin_id     String         @db.Char(36)
-  admin        User           @relation(fields: [admin_id], references: [id])
+  user_id      String         @db.Char(36)
+  user         User[] //juri atau pengawas
   created_at   DateTime       @default(now())
   description  String
   peserta      Peserta[]
@@ -41,34 +43,44 @@ enum Kelas {
 }
 
 model Peserta {
-  id          String   @id @default(cuid())
-  kegiatan_id String   @db.VarChar(30)
-  nama        String   @db.VarChar(255)
-  perguruan   String   @db.VarChar(255)
+  id          String         @id @default(cuid())
+  kegiatan_id String         @db.VarChar(30)
+  nama        String         @db.VarChar(255)
+  perguruan   String         @db.VarChar(255)
+  daerah      String         @db.VarChar(50)
   kelas       Kelas
-  kegiatan    Kegiatan @relation(fields: [kegiatan_id], references: [id])
+  kegiatan    Kegiatan       @relation(fields: [kegiatan_id], references: [id])
+  sudut_merah Pertandingan[] @relation("sudut_merah")
+  sudut_biru  Pertandingan[] @relation("sudut_biru")
 }
 
 model Pertandingan {
   id             Int      @id @default(autoincrement())
   tanggal        DateTime
   sudut_merah_id String   @db.VarChar(30)
+  sudut_merah    Peserta  @relation(fields: [sudut_merah_id], name: "sudut_merah", references: [id])
   sudut_biru_id  String   @db.VarChar(30)
+  sudut_biru     Peserta  @relation(fields: [sudut_biru_id], name: "sudut_biru", references: [id])
   kegiatan_id    String
   kegiatan       Kegiatan @relation(fields: [kegiatan_id], references: [id])
+  babak          Babak[]
 }
 
 enum BabakStatus {
+  belum_dimulai
   berjalan
   jeda
   selesai
 }
 
 model Babak {
-  id     Int         @id @default(autoincrement())
-  status BabakStatus @default(selesai)
-  timer  DateTime
-  Point  Point[]
+  id              Int          @id @default(autoincrement())
+  status          BabakStatus  @default(belum_dimulai)
+  timer           Int          @default(0)
+  waktu_mulai     DateTime?
+  pertandingan_id Int
+  pertandingan    Pertandingan @relation(fields: [pertandingan_id], references: [id])
+  point           Point[]
 }
 
 model Point {

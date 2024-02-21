@@ -8,12 +8,7 @@ export class AuthService {
   constructor(private userService: UserService) {}
   async login(payload: AuthDto) {
     const user = await this.validateUser(payload);
-    const data = {
-      id: user.id,
-      email: user.username,
-      role: user.role,
-    };
-    return data;
+    return user;
   }
 
   async validateUser(payload: AuthDto) {
