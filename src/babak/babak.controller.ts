@@ -20,28 +20,28 @@ import { RoleGuard } from 'src/role/role.guard';
 export class BabakController {
   constructor(private babakService: BabakService) {}
 
-  @Role([RoleEnum.PENGAWAS])
+  @Role([RoleEnum.ADMIN])
   @UseGuards(JwtGuard, RoleGuard)
   @Post()
   async create(@Body() payload: BabakDto) {
     return await this.babakService.create(payload);
   }
 
-  @Role([RoleEnum.PENGAWAS, RoleEnum.JURI])
+  @Role([RoleEnum.ADMIN, RoleEnum.JURI])
   @UseGuards(JwtGuard, RoleGuard)
   @Get()
   async all(@Query('pertandingan') pertandingan: number) {
     return await this.babakService.getByPertandinganId(pertandingan);
   }
 
-  @Role([RoleEnum.PENGAWAS])
+  @Role([RoleEnum.ADMIN])
   @UseGuards(JwtGuard, RoleGuard)
   @Put(':id')
   async update(@Param('id') id: number, @Body() payload: BabakDto) {
     return await this.babakService.update(id, payload);
   }
 
-  @Role([RoleEnum.PENGAWAS])
+  @Role([RoleEnum.ADMIN])
   @UseGuards(JwtGuard, RoleGuard)
   @Delete(':id')
   async delete(@Param('id') id: number) {

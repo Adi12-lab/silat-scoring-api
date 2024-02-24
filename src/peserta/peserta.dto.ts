@@ -13,4 +13,7 @@ export class PesertaDto {
 
   @IsEnum(Kelas)
   kelas: Kelas;
+
+  @IsString({ message: 'Kegiatan harus ada' })
+  kegiatan_id: string;
 }

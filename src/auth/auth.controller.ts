@@ -1,22 +1,23 @@
-import { Controller, Post, Body, Res, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Req,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { JWT_EXPIRE, JWT_SECRET_KEY } from 'src/constant';
 import { AuthDto } from './auth.dto';
-import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private userService: UserService,
     private jwtService: JwtService,
   ) {}
-  @Post('register')
-  async registerUser(@Body() payload: AuthDto) {
-    return await this.userService.createUser(payload);
-  }
 
   @Post('login')
   async login(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
@@ -28,7 +29,7 @@ export class AuthController {
     res.cookie('access_token', `${process.env.TOKEN_TYPE} ${token}`, {
       domain: process.env.DOMAIN,
       path: '/',
-      httpOnly: true,
+      // httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', //untuk produksi
       maxAge: JWT_EXPIRE,
@@ -49,12 +50,13 @@ export class AuthController {
       req.cookies['access_token'] ?? (body.token ? body.token.value : null);
     if (token) {
       const access_token = token.split(' ')[1];
-      const user = this.jwtService.verify(access_token, {
+      const user = await this.jwtService.verify(access_token, {
         publicKey: process.env.JWT_SECRET_KEY,
       });
+      // console.log(user);
       return user;
     }
-    return false;
+    throw new UnauthorizedException('Belum login');
   }
 
   @Post('logout')

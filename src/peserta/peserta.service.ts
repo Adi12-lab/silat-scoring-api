@@ -6,12 +6,11 @@ import { PesertaDto } from './peserta.dto';
 export class PesertaService {
   constructor(private prisma: PrismaService) {}
 
-  async create(payload: PesertaDto, kegiatan_id: string) {
-    // const { ...restPayload }  payload;
+  async create(payload: PesertaDto) {
+    const { kegiatan_id, ...restPayload } = payload;
     const peserta = await this.prisma.peserta.create({
       data: {
-        // ...restPayload,
-        ...payload,
+        ...restPayload,
         kegiatan: {
           connect: {
             id: kegiatan_id,
@@ -27,7 +26,7 @@ export class PesertaService {
     return peserta;
   }
 
-  async allByKegiatanPengawas(kegiatan_id: string) {
+  async allByKegiatan(kegiatan_id: string) {
     const peserta = await this.prisma.peserta.findMany({
       where: {
         kegiatan: {

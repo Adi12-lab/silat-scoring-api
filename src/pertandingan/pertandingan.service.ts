@@ -6,8 +6,8 @@ import { PertandinganDto } from './pertandingan.dto';
 export class PertandinganService {
   constructor(private prisma: PrismaService) {}
 
-  async create(payload: PertandinganDto, kegiatan_id: string) {
-    const { sudut_biru_id, sudut_merah_id, tanggal } = payload;
+  async create(payload: PertandinganDto) {
+    const { sudut_biru_id, sudut_merah_id, tanggal, kegiatan_id } = payload;
 
     const sudut_biru_data = await this.prisma.peserta.findUnique({
       where: {

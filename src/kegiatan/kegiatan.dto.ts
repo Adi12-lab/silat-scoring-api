@@ -1,8 +1,10 @@
-import { IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsDate, IsString } from 'class-validator';
 export class KegiatanDto {
-  @IsString({ message: 'Pengawas atau juri diperlukan' })
-  user_id: string;
+  @Transform(({ value }) => new Date(value))
+  @IsDate({ message: 'Tanggal tidak valid' })
+  tanggal: Date;
 
-  @IsString({ message: 'Deskripsi diperlukan' })
-  description: string;
+  @IsString({ message: 'Nama diperlukan' })
+  nama: string;
 }

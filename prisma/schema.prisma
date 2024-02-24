@@ -12,7 +12,6 @@ datasource db {
 
 enum Role {
   JURI
-  PENGAWAS
   ADMIN
 }
 
@@ -22,16 +21,12 @@ model User {
   password    String
   role        Role      @default(JURI)
   point       Point[]
-  kegiatan    Kegiatan? @relation(fields: [kegiatan_id], references: [id]) //bisa jadi pengawas atau juri
-  kegiatan_id String?
 }
 
 model Kegiatan {
   id           String         @id @default(cuid())
-  user_id      String         @db.Char(36)
-  user         User[] //juri atau pengawas
-  created_at   DateTime       @default(now())
-  description  String
+  nama         String
+  tanggal      DateTime
   peserta      Peserta[]
   pertandingan Pertandingan[]
 }

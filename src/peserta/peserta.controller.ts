@@ -2,11 +2,11 @@ import {
   Controller,
   Post,
   Get,
-  Req,
   Body,
   Param,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { Role as RoleEnum } from '@prisma/client';
 import { PesertaService } from './peserta.service';
@@ -15,25 +15,22 @@ import { JwtGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/role/role.guard';
 import { UseGuards } from '@nestjs/common';
 import { PesertaDto } from './peserta.dto';
-import { Request } from 'express';
 
 @Controller('peserta')
-@Role([RoleEnum.PENGAWAS])
+@Role([RoleEnum.ADMIN])
 @UseGuards(JwtGuard, RoleGuard)
 export class PesertaController {
   constructor(private persertaService: PesertaService) {}
 
   @Post()
-  async create(@Req() req: Request, @Body() payload: PesertaDto) {
+  async create(@Body() payload: PesertaDto) {
     // console.log(pengawas);
-    return await this.persertaService.create(payload, req['user'].kegiatan_id);
+    return await this.persertaService.create(payload);
   }
 
   @Get()
-  async all(@Req() req: Request) {
-    return await this.persertaService.allByKegiatanPengawas(
-      req['user'].kegiatan_id,
-    );
+  async all(@Query('kegiatan') kegiatan: string) {
+    return await this.persertaService.allByKegiatan(kegiatan);
   }
   @Put(':id')
   async update(@Param('id') id: string, @Body() payload: PesertaDto) {

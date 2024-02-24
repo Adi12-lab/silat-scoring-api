@@ -1,6 +1,5 @@
 import {
   Controller,
-  Req,
   Body,
   Post,
   Get,
@@ -8,8 +7,8 @@ import {
   Delete,
   UseGuards,
   Param,
+  Query,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { Role as RoleEnum } from '@prisma/client';
 import { RoleGuard } from 'src/role/role.guard';
 import { Role } from 'src/role/role.decorator';
@@ -19,26 +18,20 @@ import { PertandinganService } from './pertandingan.service';
 import { PertandinganDto } from './pertandingan.dto';
 
 @Controller('pertandingan')
-@Role([RoleEnum.PENGAWAS])
+@Role([RoleEnum.ADMIN])
 @UseGuards(JwtGuard, RoleGuard)
 export class PertandinganController {
-  constructor(
-    private pertandinganService: PertandinganService,
-    // private prisma: PrismaService,
-  ) {}
+  constructor(private pertandinganService: PertandinganService) {}
 
   @Post()
-  async create(@Req() req: Request, @Body() payload: PertandinganDto) {
+  async create(@Body() payload: PertandinganDto) {
     //ambil id pengawas
-    return await this.pertandinganService.create(
-      payload,
-      req['user'].kegiatan_id,
-    );
+    return await this.pertandinganService.create(payload);
   }
 
   @Get()
-  async all(@Req() req: Request) {
-    return await this.pertandinganService.all(req['user'].kegiatan_id);
+  async all(@Query('kegiatan') kegiatan: string) {
+    return await this.pertandinganService.all(kegiatan);
   }
 
   @Put(':id')
