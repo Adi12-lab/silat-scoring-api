@@ -11,14 +11,19 @@ import { JwtService } from '@nestjs/jwt';
 import { JWT_EXPIRE, JWT_SECRET_KEY } from 'src/constant';
 import { AuthDto } from './auth.dto';
 import { AuthService } from './auth.service';
+import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private jwtService: JwtService,
+    private userService: UserService,
   ) {}
-
+  @Post('register')
+  async registerUser(@Body() payload: AuthDto) {
+    return await this.userService.createUser(payload);
+  }
   @Post('login')
   async login(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
     const user = await this.authService.login(dto);

@@ -16,11 +16,11 @@ enum Role {
 }
 
 model User {
-  id          String    @id @default(uuid())
-  username    String    @unique @db.VarChar(50)
-  password    String
-  role        Role      @default(JURI)
-  point       Point[]
+  id       String  @id @default(uuid())
+  username String  @unique @db.VarChar(50)
+  password String
+  role     Role    @default(JURI)
+  point    Point[]
 }
 
 model Kegiatan {
@@ -31,10 +31,17 @@ model Kegiatan {
   pertandingan Pertandingan[]
 }
 
-enum Kelas {
-  A
-  B
-  C
+model Kategori {
+  id      Int       @id @default(autoincrement())
+  nama    String    @db.VarChar(50)
+  peserta Peserta[]
+}
+
+model Kelas {
+  id          Int       @id @default(autoincrement())
+  nama        String    @db.Char(1)
+  berat_badan Int
+  peserta     Peserta[]
 }
 
 model Peserta {
@@ -43,15 +50,19 @@ model Peserta {
   nama        String         @db.VarChar(255)
   perguruan   String         @db.VarChar(255)
   daerah      String         @db.VarChar(50)
-  kelas       Kelas
+  kategori_id Int
+  kategori    Kategori       @relation(fields: [kategori_id], references: [id])
   kegiatan    Kegiatan       @relation(fields: [kegiatan_id], references: [id])
   sudut_merah Pertandingan[] @relation("sudut_merah")
   sudut_biru  Pertandingan[] @relation("sudut_biru")
+  kelas_id    Int
+  kelas       Kelas          @relation(fields: [kelas_id], references: [id])
 }
 
 model Pertandingan {
   id             Int      @id @default(autoincrement())
   tanggal        DateTime
+  gelanggang     String   @db.VarChar(50)
   sudut_merah_id String   @db.VarChar(30)
   sudut_merah    Peserta  @relation(fields: [sudut_merah_id], name: "sudut_merah", references: [id])
   sudut_biru_id  String   @db.VarChar(30)

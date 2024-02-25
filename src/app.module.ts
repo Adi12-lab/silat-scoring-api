@@ -8,9 +8,11 @@ import { PesertaModule } from './peserta/peserta.module';
 import { PertandinganModule } from './pertandingan/pertandingan.module';
 import { EventModule } from './event/event.module';
 import { BabakModule } from './babak/babak.module';
+import { KategoriModule } from './kategori/kategori.module';
+import { KelasModule } from './kelas/kelas.module';
 
 @Module({
-  imports: [UserModule, AuthModule, KegiatanModule, PesertaModule, PertandinganModule, EventModule, BabakModule],
+  imports: [UserModule, AuthModule, KegiatanModule, PesertaModule, PertandinganModule, EventModule, BabakModule, KategoriModule, KelasModule],
   controllers: [AppController],
   providers: [AppService],
 })

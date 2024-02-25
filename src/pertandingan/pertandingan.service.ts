@@ -7,7 +7,8 @@ export class PertandinganService {
   constructor(private prisma: PrismaService) {}
 
   async create(payload: PertandinganDto) {
-    const { sudut_biru_id, sudut_merah_id, tanggal, kegiatan_id } = payload;
+    const { sudut_biru_id, sudut_merah_id, tanggal, kegiatan_id, gelanggang } =
+      payload;
 
     const sudut_biru_data = await this.prisma.peserta.findUnique({
       where: {
@@ -21,14 +22,17 @@ export class PertandinganService {
       },
     });
 
-    if (sudut_biru_data.kelas !== sudut_merah_data.kelas) {
-      throw new BadRequestException('Peserta beda kelas');
-    }
-
     if (sudut_biru_data.kegiatan_id !== sudut_merah_data.kegiatan_id) {
       throw new BadRequestException('Peserta beda kegiatan');
     }
 
+    if (sudut_biru_data.kategori_id !== sudut_merah_data.kategori_id) {
+      throw new BadRequestException('Peserta beda kategori');
+    }
+
+    if (sudut_biru_data.kelas_id !== sudut_merah_data.kelas_id) {
+      throw new BadRequestException('Peserta beda kelas');
+    }
     const pertandingan = await this.prisma.pertandingan.create({
       data: {
         tanggal,
@@ -42,6 +46,7 @@ export class PertandinganService {
             id: sudut_biru_id,
           },
         },
+        gelanggang,
         sudut_merah: {
           connect: {
             id: sudut_merah_id,
@@ -80,14 +85,6 @@ export class PertandinganService {
         id: sudut_merah_id,
       },
     });
-
-    if (sudut_biru_data.kelas !== sudut_merah_data.kelas) {
-      throw new BadRequestException('Peserta beda kelas');
-    }
-
-    if (sudut_biru_data.kegiatan_id !== sudut_merah_data.kegiatan_id) {
-      throw new BadRequestException('Peserta beda kegiatan');
-    }
 
     return await this.prisma.pertandingan.update({
       where: {

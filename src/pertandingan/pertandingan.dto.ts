@@ -5,6 +5,8 @@ export class PertandinganDto {
   @IsDate({ message: 'Tanggal tidak valid' })
   tanggal: Date;
 
+  @IsString({ message: 'Gelanggang diperlukan' })
+  gelanggang: string;
   @IsString({ message: 'Kegiatan tidak valid' })
   kegiatan_id: string;
   @IsString({ message: 'Sudut merah harus ada' })

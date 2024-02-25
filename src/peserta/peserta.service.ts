@@ -7,13 +7,23 @@ export class PesertaService {
   constructor(private prisma: PrismaService) {}
 
   async create(payload: PesertaDto) {
-    const { kegiatan_id, ...restPayload } = payload;
+    const { kegiatan_id, kategori_id, kelas_id, ...restPayload } = payload;
     const peserta = await this.prisma.peserta.create({
       data: {
         ...restPayload,
         kegiatan: {
           connect: {
             id: kegiatan_id,
+          },
+        },
+        kategori: {
+          connect: {
+            id: kategori_id,
+          },
+        },
+        kelas: {
+          connect: {
+            id: kelas_id,
           },
         },
       },
@@ -32,6 +42,10 @@ export class PesertaService {
         kegiatan: {
           id: kegiatan_id,
         },
+      },
+      include: {
+        kategori: true,
+        kelas: true,
       },
     });
     return peserta;
