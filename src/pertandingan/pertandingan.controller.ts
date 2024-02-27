@@ -34,6 +34,11 @@ export class PertandinganController {
     return await this.pertandinganService.all(kegiatan);
   }
 
+  @Get(':id')
+  async find(@Param('id') id: number) {
+    return await this.pertandinganService.find(id);
+  }
+
   @Put(':id')
   async update(@Param('id') id: number, @Body() payload: PertandinganDto) {
     // console.log(id);

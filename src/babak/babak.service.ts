@@ -7,9 +7,15 @@ export class BabakService {
   constructor(private prisma: PrismaService) {}
 
   async create(payload: BabakDto) {
+    const { pertandingan_id, ...restPayload } = payload;
     const babak = await this.prisma.babak.create({
       data: {
-        ...payload,
+        ...restPayload,
+        pertandingan: {
+          connect: {
+            id: pertandingan_id,
+          },
+        },
       },
     });
 

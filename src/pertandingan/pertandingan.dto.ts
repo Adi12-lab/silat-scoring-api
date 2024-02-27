@@ -1,10 +1,5 @@
-import { Transform } from 'class-transformer';
-import { IsString, IsDate } from 'class-validator';
+import { IsString } from 'class-validator';
 export class PertandinganDto {
-  @Transform(({ value }) => new Date(value))
-  @IsDate({ message: 'Tanggal tidak valid' })
-  tanggal: Date;
-
   @IsString({ message: 'Gelanggang diperlukan' })
   gelanggang: string;
   @IsString({ message: 'Kegiatan tidak valid' })

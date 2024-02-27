@@ -3,6 +3,9 @@ import { IsNumber, IsDate, IsEnum, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class BabakDto {
+  @IsNumber({}, { message: 'No babak harus ada' })
+  no: number;
+
   @IsNumber({}, { message: 'Timer tidak valid' })
   timer: number;
 

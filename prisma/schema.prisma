@@ -61,7 +61,6 @@ model Peserta {
 
 model Pertandingan {
   id             Int      @id @default(autoincrement())
-  tanggal        DateTime
   gelanggang     String   @db.VarChar(50)
   sudut_merah_id String   @db.VarChar(30)
   sudut_merah    Peserta  @relation(fields: [sudut_merah_id], name: "sudut_merah", references: [id])
@@ -81,6 +80,7 @@ enum BabakStatus {
 
 model Babak {
   id              Int          @id @default(autoincrement())
+  no              Int
   status          BabakStatus  @default(belum_dimulai)
   timer           Int          @default(0)
   waktu_mulai     DateTime?

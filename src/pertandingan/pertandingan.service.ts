@@ -7,8 +7,7 @@ export class PertandinganService {
   constructor(private prisma: PrismaService) {}
 
   async create(payload: PertandinganDto) {
-    const { sudut_biru_id, sudut_merah_id, tanggal, kegiatan_id, gelanggang } =
-      payload;
+    const { sudut_biru_id, sudut_merah_id, kegiatan_id, gelanggang } = payload;
 
     const sudut_biru_data = await this.prisma.peserta.findUnique({
       where: {
@@ -35,7 +34,6 @@ export class PertandinganService {
     }
     const pertandingan = await this.prisma.pertandingan.create({
       data: {
-        tanggal,
         kegiatan: {
           connect: {
             id: kegiatan_id,
@@ -58,11 +56,35 @@ export class PertandinganService {
   }
 
   async all(kegiatan_id: string) {
-    return await this.prisma.pertandingan.findMany({
+    const pertandingan = await this.prisma.pertandingan.findMany({
       where: {
         kegiatan: {
           id: kegiatan_id,
         },
+      },
+      include: {
+        sudut_biru: {
+          include: {
+            kategori: true,
+            kelas: true,
+          },
+        },
+        sudut_merah: true,
+      },
+    });
+    const payload = pertandingan.map((ptd) => {
+      const kategori = ptd.sudut_biru.kategori.nama;
+      const kelas = ptd.sudut_biru.kelas.nama;
+
+      return { ...ptd, kategori, kelas };
+    });
+    return payload;
+  }
+
+  async find(id: number) {
+    return await this.prisma.pertandingan.findUnique({
+      where: {
+        id,
       },
       include: {
         sudut_biru: true,
@@ -72,7 +94,7 @@ export class PertandinganService {
   }
 
   async update(id: number, payload: PertandinganDto) {
-    const { sudut_biru_id, sudut_merah_id, tanggal } = payload;
+    const { sudut_biru_id, sudut_merah_id } = payload;
 
     const sudut_biru_data = await this.prisma.peserta.findUnique({
       where: {
@@ -91,7 +113,6 @@ export class PertandinganService {
         id,
       },
       data: {
-        tanggal,
         sudut_biru: {
           connect: {
             id: sudut_biru_id,
