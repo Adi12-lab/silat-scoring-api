@@ -18,4 +18,12 @@ export class KategoriService {
   async all() {
     return await this.prisma.kategori.findMany();
   }
+
+  async delete(id: number) {
+    return await this.prisma.kategori.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

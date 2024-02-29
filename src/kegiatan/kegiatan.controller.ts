@@ -7,16 +7,18 @@ import { Role } from 'src/role/role.decorator';
 import { Role as RoleEnum } from '@prisma/client';
 
 @Controller('kegiatan')
-@Role([RoleEnum.ADMIN])
-@UseGuards(JwtGuard, RoleGuard)
 export class KegiatanController {
   constructor(private kegiatanService: KegiatanService) {}
 
+  @Role([RoleEnum.JURI])
+  @UseGuards(JwtGuard, RoleGuard)
   @Post()
   async create(@Body() payload: KegiatanDto) {
     return await this.kegiatanService.create(payload);
   }
 
+  @Role([RoleEnum.ADMIN, RoleEnum.JURI])
+  @UseGuards(JwtGuard, RoleGuard)
   @Get()
   async all() {
     return await this.kegiatanService.all();

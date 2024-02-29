@@ -34,6 +34,15 @@ export class UserService {
     return users;
   }
 
+  async juri() {
+    const juri = await this.prisma.user.findMany({
+      where: {
+        role: 'JURI',
+      },
+    });
+    return juri;
+  }
+
   async findById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: {

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { PertandinganDto } from './pertandingan.dto';
+import _ from 'underscore';
 
 @Injectable()
 export class PertandinganService {
@@ -75,8 +76,8 @@ export class PertandinganService {
     const payload = pertandingan.map((ptd) => {
       const kategori = ptd.sudut_biru.kategori.nama;
       const kelas = ptd.sudut_biru.kelas.nama;
-
-      return { ...ptd, kategori, kelas };
+      const sudut_biru = _.omit(ptd.sudut_biru, 'kelas', 'kategori');
+      return { ...ptd, sudut_biru, kategori, kelas };
     });
     return payload;
   }

@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  UseGuards,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { Role as RoleEnum } from '@prisma/client';
 import { KategoriService } from './kategori.service';
 import { KategoriDto } from './kategori.dto';
@@ -21,5 +29,10 @@ export class KategoriController {
   @Get()
   async all() {
     return await this.kategoriService.all();
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number) {
+    return await this.kategoriService.delete(id);
   }
 }

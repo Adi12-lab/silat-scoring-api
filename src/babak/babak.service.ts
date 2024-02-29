@@ -30,6 +30,23 @@ export class BabakService {
     });
   }
 
+  async juriInBabak(id: number, juri_id: string) {
+    const result = await this.prisma.babak.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        pertandingan: {
+          include: {
+            sudut_biru: true,
+            sudut_merah: true,
+          },
+        },
+      },
+    });
+    return result;
+  }
+
   async update(id: number, payload: BabakDto) {
     return await this.prisma.babak.update({
       where: {

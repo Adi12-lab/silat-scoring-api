@@ -29,6 +29,11 @@ export class UserController {
     return await this.userService.allUser();
   }
 
+  @Get('juri')
+  async juri() {
+    return await this.userService.juri();
+  }
+
   @Post()
   async create(@Req() request: Request, @Body() payload: UserDto) {
     return await this.userService.createUserWithoutRegister(payload);
